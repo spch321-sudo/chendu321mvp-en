@@ -2899,95 +2899,73 @@ function yunFetchBlob(piece){
       screen-off and app switching all play straight through to the end.
    Every chunk is cached permanently in IndexedDB, so a second listen is instant/offline. ====== */
 function yunPlayJoined(text, id, startIdx){
-  spkStop(); yunUnlock();
-  var my=++spk.token;
   var chunks=yunChunks(spkSanitize(text));
-  var start=(startIdx&&startIdx>0&&startIdx<chunks.length)?startIdx:0;
-  var slice=chunks.slice(start);
-  if(!slice.length){ return; }
-  spk.queue=chunks; spk.idx=start+1; spk.active=true; spk.paused=false; spk.mode="yun"; spk.curId=id||"";
+  if(!chunks.length){ yunStop(); return; }
+  var start=(startIdx>0 && startIdx<chunks.length)?startIdx:0;
+  spk.curId=id||""; spk.curText=text||""; spk.queue=chunks; spk.idx=start+1;
+  spk.active=true; spk.paused=false; spk.mode="yun"; spk.joined=true;
+  var my=++spk.token;
   if(typeof spkMediaSession==="function") spkMediaSession("play");
-  if(typeof updateSpeakButtons==="function") updateSpeakButtons();
-  if(typeof uiToast==="function") uiToast("Starting now \u2014 the rest downloads while it plays\u2026");
-  if(typeof persistSpkResume==="function") persistSpkResume();
+  if(typeof updateSpeakButtons==="function") updateSpeakButtons();   /* 立刻浮出停止列＋存離線膠囊 */
+  if(typeof uiToast==="function") uiToast("Starting\u2026");
+  persistSpkResume();
 
   var a=yunGetAudio();
-  var phase="head", headEnded=false, headDur=0, fullURL=null, headURL=null, swapped=false;
+  var PREFETCH=4;                 /* 邊念邊預抓後面 4 段，段間無縫 */
+  var jobs={};                    /* i -> Promise<Blob> */
+  var urls={};                    /* i -> objectURL（播完即回收） */
+
+  function grab(i){
+    if(i<0 || i>=chunks.length) return null;
+    if(!jobs[i]) jobs[i]=yunFetchBlob(chunks[i]);
+    return jobs[i];
+  }
+  function prefetch(from){
+    for(var k=from; k<from+PREFETCH && k<chunks.length; k++){ var p=grab(k); if(p&&p.catch) p.catch(function(){}); }
+  }
+  function revoke(i){ try{ if(urls[i]){ URL.revokeObjectURL(urls[i]); delete urls[i]; } }catch(_){} }
 
   function attachSeek(){
     try{ var ms=navigator.mediaSession; if(!ms) return;
-      ms.setActionHandler("seekto", function(e){ try{ if(e.seekTime!=null) a.currentTime=e.seekTime; }catch(_){}});
       ms.setActionHandler("seekforward", function(){ try{ a.currentTime=Math.min(a.duration||0, a.currentTime+15); }catch(_){}});
       ms.setActionHandler("seekbackward", function(){ try{ a.currentTime=Math.max(0, a.currentTime-15); }catch(_){}});
+      ms.setActionHandler("seekto", null);
     }catch(_){}
   }
-  function pos(){
-    try{ if(navigator.mediaSession && navigator.mediaSession.setPositionState && isFinite(a.duration) && a.duration>0)
-      navigator.mediaSession.setPositionState({duration:a.duration, position:Math.min(a.currentTime,a.duration), playbackRate:a.playbackRate||1}); }catch(_){}
-  }
-  function wire(){
-    a.onerror=function(){ if(my===spk.token) yunStop(); };
-    a.onloadedmetadata=function(){ if(my===spk.token) pos(); };
-    a.onended=function(){
-      if(my!==spk.token) return;
-      if(phase==="full"){ if(typeof maybeClearResumeOnComplete==="function") maybeClearResumeOnComplete(); yunStop(); return; }
-      headEnded=true;
-      if(isFinite(a.duration)) headDur=a.duration;
-      if(fullURL) swapToFull();
-    };
-  }
-  function swapToFull(){
-    if(my!==spk.token || swapped || !fullURL) return;
-    swapped=true; phase="full";
-    var at = headEnded ? (headDur||0) : (a.currentTime||0);
-    a.src=fullURL;
-    try{ if(headURL) URL.revokeObjectURL(headURL); }catch(_){}
-    headURL=null;
-    a.onloadedmetadata=function(){
-      if(my!==spk.token) return;
-      try{ if(at>0 && isFinite(a.duration) && at<a.duration) a.currentTime=at; }catch(_){}
-      pos();
-    };
-    var p=a.play(); if(p&&p.catch) p.catch(function(){});
-  }
 
-  /* (1) first chunk -> speak right away */
-  yunFetchBlob(slice[0]).then(function(b){
+  function playFrom(i){
     if(my!==spk.token) return;
-    headURL=URL.createObjectURL(new Blob([b],{type:"audio/mpeg"}));
-    wire(); attachSeek();
-    a.src=headURL;
-    if(slice.length===1){ swapped=true; phase="full"; }
-    var p=a.play(); if(p&&p.catch) p.catch(function(){});
-  }, function(){
-    if(my!==spk.token) return;
-    spk.token--;
-    if(typeof uiToast==="function") uiToast("Playing in segments (couldn\u2019t prepare offline file)");
-    yunToggleChunked(text,id,start);
-  });
-
-  /* (2) meanwhile: fetch the whole lesson, join it, swap once */
-  if(slice.length>1){
-    var res=new Array(slice.length), done=0, next=0, running=0, CONC=6, bad=false;
-    var pump=function(){
-      while(running<CONC && next<slice.length){
-        (function(i){ running++;
-          yunFetchBlob(slice[i]).then(function(b){ res[i]=b; }, function(){ bad=true; }).then(function(){
-            running--; done++;
-            if(my!==spk.token || bad) return;
-            if(done>=slice.length){
-              try{ fullURL=URL.createObjectURL(new Blob(res,{type:"audio/mpeg"})); }catch(_){ return; }
-              swapToFull();
-              return;
-            }
-            pump();
-          });
-        })(next++);
+    if(i>=chunks.length){ maybeClearResumeOnComplete(); yunStop(); return; }
+    spk.idx=i+1; persistSpkResume();
+    prefetch(i);
+    grab(i).then(function(b){
+      if(my!==spk.token) return;
+      var u=URL.createObjectURL(new Blob([b],{type:"audio/mpeg"}));
+      urls[i]=u;
+      a.onended=null; a.onerror=null; a.ontimeupdate=null; a.onloadedmetadata=null;
+      a.src=u;
+      a.onended=function(){ if(my!==spk.token) return; revoke(i); playFrom(i+1); };
+      a.onerror=function(){ if(my!==spk.token) return; revoke(i); playFrom(i+1); };   /* 單段壞掉就跳過，不整個停 */
+      a.ontimeupdate=function(){ if(my===spk.token) spkPos(a); };
+      a.onloadedmetadata=function(){ if(my===spk.token) spkPos(a); };
+      var p=a.play(); if(p&&p.catch) p.catch(function(){ if(my===spk.token) yunStop(); });
+    }, function(){
+      if(my!==spk.token) return;
+      if(i===start){
+        /* 第一段就抓不到 → 明確提示 + 退回內建語音（絕不靜悄悄） */
+        spk.active=false;
+        if(typeof uiToast==="function") uiToast("Cloud voice unavailable \u2014 using the device voice (tap Read again if silent)");
+        spkToggleNative(spk.curText||"", spk.curId);
+      }else{
+        playFrom(i+1);   /* 中途某段抓不到就略過 */
       }
-    };
-    pump();
+    });
   }
+
+  attachSeek();
+  playFrom(start);
 }
+
 
 function ttsNetFetch(piece,key){
   return fetch(TTS_ENDPOINT,{
@@ -3296,7 +3274,7 @@ function renderSpkSheet(){
       +'<div class="spk-rate"><span>Speed</span><input type="range" min="0.6" max="1.3" step="0.02" value="'+rate+'" oninput="spkSetRate(this.value)"><span id="spk-rate-lbl">'+rate.toFixed(2)+'×</span></div>'
       +'<div class="spk-bg"><div class="spk-bg-l"><div class="spk-bg-t">Background playback</div><div class="spk-bg-d">Keep playing when the screen is off or you switch apps · lock-screen controls stay active</div></div><button class="spk-sw'+(state.spkBgPlay?' on':'')+'" role="switch" aria-checked="'+(state.spkBgPlay?'true':'false')+'" onclick="spkToggleBg()"><span class="spk-sw-dot"></span></button></div>'
       +((yunEnabled()&&state.lesson)?('<div class="spk-dl"><button class="spk-dl-btn" id="spk-preload-btn" onclick="spkPreloadLesson()">⬇ Pre-download this lesson’s audio</button><div class="spk-dl-sub">Once downloaded, this lesson’s audio plays offline and uses no further data</div></div>'):"")
-      +'<div class="spk-ver">Build v1.0.6</div>'
+      +'<div class="spk-ver">Build v1.0.7</div>'
       +'<div class="spk-acts"><button class="spk-try" onclick="spkPreview()">▶︎ Preview</button><button class="spk-done" onclick="closeSpkSettings()">Done</button></div>'
       +(yun.ready?'':'<div class="spk-tip">Want a more natural cloud voice? Follow the voice-setup guide to connect a cloud speech service.</div>')
     +'</div></div>';
