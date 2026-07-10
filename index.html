@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="321 Morning Devotion">
+<meta name="apple-mobile-web-app-title" content="321 Devotion">
 <meta name="application-name" content="321 Morning Devotion">
 <title>321 Morning Devotion · Kingdom 3-2-1 Online Fellowship</title>
 <style>
@@ -176,6 +176,7 @@
   .spk-sw.on .spk-sw-dot{transform:translateX(20px);}
   .spk-rate input{flex:1;accent-color:var(--mint);}
   .spk-acts{display:flex;gap:10px;}
+  .spk-ver{text-align:center;font-size:11px;color:var(--inkFaint);letter-spacing:.06em;margin:10px 0 2px;}
   .spk-try{flex:1;border:1.5px solid var(--mint);background:var(--mintSoft);color:var(--mintDark);border-radius:14px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;}
   .spk-done{flex:1;border:none;background:var(--mint);color:#fff;border-radius:14px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;}
   .spk-dl{margin:14px 0 4px;}
@@ -3295,6 +3296,7 @@ function renderSpkSheet(){
       +'<div class="spk-rate"><span>Speed</span><input type="range" min="0.6" max="1.3" step="0.02" value="'+rate+'" oninput="spkSetRate(this.value)"><span id="spk-rate-lbl">'+rate.toFixed(2)+'×</span></div>'
       +'<div class="spk-bg"><div class="spk-bg-l"><div class="spk-bg-t">Background playback</div><div class="spk-bg-d">Keep playing when the screen is off or you switch apps · lock-screen controls stay active</div></div><button class="spk-sw'+(state.spkBgPlay?' on':'')+'" role="switch" aria-checked="'+(state.spkBgPlay?'true':'false')+'" onclick="spkToggleBg()"><span class="spk-sw-dot"></span></button></div>'
       +((yunEnabled()&&state.lesson)?('<div class="spk-dl"><button class="spk-dl-btn" id="spk-preload-btn" onclick="spkPreloadLesson()">⬇ Pre-download this lesson’s audio</button><div class="spk-dl-sub">Once downloaded, this lesson’s audio plays offline and uses no further data</div></div>'):"")
+      +'<div class="spk-ver">Build v1.0.6</div>'
       +'<div class="spk-acts"><button class="spk-try" onclick="spkPreview()">▶︎ Preview</button><button class="spk-done" onclick="closeSpkSettings()">Done</button></div>'
       +(yun.ready?'':'<div class="spk-tip">Want a more natural cloud voice? Follow the voice-setup guide to connect a cloud speech service.</div>')
     +'</div></div>';
