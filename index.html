@@ -1137,7 +1137,7 @@ function inline(text){
 function nl(s){return esc(s).replace(/\n/g,"<br>");}
 
 /* ============ STATE ============ */
-let state={view:"home",lesson:null,tab:"read",deep:{},checked:{},openUnit:null,read:{},last:null,font:0,streak:0,lastDate:null,best:0,notes:{},marks:{},reviewN:null,reviewUnit:null,s321:{},strategyId:null,xzPos:null,s920:[],s920Help:false,s920cf:{event:"",done:[]},s235:{comp:[],fam:[],team:[]},sys:[],tmk:{},tnote:{},spkResume:{},contPos:null,noteOpen:{}};
+let state={view:"home",lesson:null,tab:"read",deep:{},checked:{},openUnit:null,read:{},last:null,font:0,streak:0,lastDate:null,best:0,notes:{},marks:{},reviewN:null,reviewUnit:null,s321:{},strategyId:null,xzPos:null,s920:[],s920Help:false,s920cf:{event:"",done:[]},s235:{comp:[],fam:[],team:[]},sys:[],tmk:{},tnote:{},spkResume:{},contPos:null,noteOpen:{},spkBgPlay:true,spkBgOn1:0};
 
 /* ---- 持久化（LINE/瀏覽器皆可；沙盒被擋時自動略過，不影響使用）---- */
 var LS_KEY="chendu321_v1";
@@ -1160,6 +1160,8 @@ function loadState(){
     if(d.xzPos&&typeof d.xzPos==="object") state.xzPos=d.xzPos;
     if(Array.isArray(d.xzFavs)) state.xzFavs=d.xzFavs;
     if(typeof d.spkBgPlay==="boolean") state.spkBgPlay=d.spkBgPlay;
+    if(typeof d.spkBgOn1==="number") state.spkBgOn1=d.spkBgOn1;
+    if(!state.spkBgOn1){ state.spkBgPlay=true; state.spkBgOn1=1; }   /* one-time: background playback is now the default */
     if(d.spkResume&&typeof d.spkResume==="object") state.spkResume=d.spkResume;
     if(Array.isArray(d.s920)) state.s920=d.s920;
     if(typeof d.s920Help==="boolean") state.s920Help=d.s920Help;
@@ -1179,7 +1181,7 @@ function saveState(){
     localStorage.setItem(LS_KEY,JSON.stringify({
       checked:state.checked, read:state.read, last:state.last,
       openUnit:state.openUnit, contPos:state.contPos, font:state.font,
-      streak:state.streak, lastDate:state.lastDate, best:state.best, notes:state.notes, marks:state.marks, s321:state.s321, xzPos:state.xzPos, xzFavs:state.xzFavs, spkBgPlay:state.spkBgPlay, s920:state.s920, s920Help:state.s920Help, s920cf:state.s920cf, s235:state.s235, sys:state.sys, tmk:state.tmk, tnote:state.tnote, spkResume:state.spkResume, spkVoice:state.spkVoice, spkRate:state.spkRate, ttsEngine:state.ttsEngine, azVoice:state.azVoice
+      streak:state.streak, lastDate:state.lastDate, best:state.best, notes:state.notes, marks:state.marks, s321:state.s321, xzPos:state.xzPos, xzFavs:state.xzFavs, spkBgPlay:state.spkBgPlay, spkBgOn1:state.spkBgOn1, s920:state.s920, s920Help:state.s920Help, s920cf:state.s920cf, s235:state.s235, sys:state.sys, tmk:state.tmk, tnote:state.tnote, spkResume:state.spkResume, spkVoice:state.spkVoice, spkRate:state.spkRate, ttsEngine:state.ttsEngine, azVoice:state.azVoice
     }));
   }catch(e){}
 }
