@@ -972,6 +972,7 @@ function bookHomeHTML(){
     +'<div class="bk-toc">'
       +'<div class="bk-toc-label">CONTENTS · TAP A UNIT TO BEGIN READING</div>'
       +cards
+      +((typeof yunEnabled==="function"&&yunEnabled())?'<div class="bk-dl"><button class="bk-dl-btn" id="bk-all-preload-btn" onclick="spkPreloadBookAll()">\u2b07 Pre-download the whole book\u2019s audio</button><div class="bk-dl-sub">Once downloaded, the whole book plays offline and uses no further data</div></div>':"")
       +'<div class="bk-toc-end">3 Foundations · 2 Cores · 1 Purpose</div>'
     +'</div>';
 }
@@ -3171,6 +3172,41 @@ window.spkPreloadLesson = function(){
   pump();
 };
 /* ====== 預先下載整章書本語音（重用朗讀管線 → 鍵值與 bookSpeak 一致，播放必命中快取） ====== */
+
+/* 書本目錄頁：一次把整本書的語音抓進 IndexedDB，之後全書離線可聽 */
+window.spkPreloadBookAll = function(){
+  try{ spk.voiceOverride = null; }catch(_){}
+  if(typeof yunEnabled!=="function" || !yunEnabled()){ if(typeof uiToast==="function") uiToast("You\u2019re on the device voice, which already works offline"); return; }
+  if(window.__spkPreloadBusy) return;
+  var pieces=[], seen={};
+  (BOOK||[]).forEach(function(u){
+    yunChunks(spkSanitize(bookSpeakText(u))).forEach(function(p){ if(!seen[p]){ seen[p]=1; pieces.push(p); } });
+  });
+  if(!pieces.length){ if(typeof uiToast==="function") uiToast("No audio to download"); return; }
+  var okGo=true;
+  try{ okGo=window.confirm("Pre-download all "+pieces.length+" audio segments of the book? Wi-Fi recommended."); }catch(_){}
+  if(!okGo) return;
+  window.__spkPreloadBusy=true;
+  var total=pieces.length, ok=0, fail=0, started=0, running=0, CONC=3;
+  function btn(){ return document.getElementById("bk-all-preload-btn"); }
+  function label(x){ var b=btn(); if(b) b.textContent=x; }
+  function disable(d){ var b=btn(); if(b) b.disabled=!!d; }
+  disable(true); label("Downloading\u2026 0/"+total);
+  function pump(){
+    while(running<CONC && started<pieces.length){
+      var piece=pieces[started++]; running++;
+      yunFetch(piece).then(function(){ ok++; }, function(){ fail++; }).then(function(){
+        running--; label("Downloading\u2026 "+(ok+fail)+"/"+total); pump();
+      });
+    }
+    if(running===0 && started>=pieces.length){
+      window.__spkPreloadBusy=false; disable(false);
+      if(fail){ label("Saved "+ok+"/"+total); if(typeof uiToast==="function") uiToast("Mostly done \u2014 tap again later to finish the rest"); }
+      else { label("\u2713 Whole book saved for offline"); if(typeof uiToast==="function") uiToast("The whole book is saved \u2014 it now plays offline"); }
+    }
+  }
+  pump();
+};
 window.spkPreloadBook = function(){
   spk.voiceOverride = null;
   var u = (BOOK||[])[state.bookUnit];
