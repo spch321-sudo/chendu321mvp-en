@@ -6,7 +6,7 @@
    - 有新版本時：postMessage 通知頁面浮出「已有新版本 · 立即更新」膠囊
    改版時只要把 VERSION 加一號，使用者就會收到更新提示。
 */
-var VERSION = "1.1.0";
+var VERSION = "1.2.0";
 var CACHE   = "chendu321-en-" + VERSION;
 
 var CORE = [
@@ -60,7 +60,7 @@ self.addEventListener("fetch", function(e){
 
   if(req.mode === "navigate"){
     e.respondWith(
-      fetch(req).then(function(res){
+      fetch(req, {cache:"reload"}).then(function(res){   /* 繞過瀏覽器 HTTP 快取，內容永遠最新 */
         var copy = res.clone();
         caches.open(CACHE).then(function(c){ c.put("./index.html", copy); });
         return res;

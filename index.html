@@ -2859,20 +2859,52 @@ function yunChunks(text){
 /* 每段語音一生只向 Worker 抓一次，之後秒播、離線可聽，替 Worker 省成本。 */
 /* 任何 IndexedDB 失敗都自動走回網路抓取，絕不影響既有朗讀與內建語音退路。 */
 var TTS_DB="chendu321_tts";
+
+/* ====== 向 Worker 取語音：失敗自動重試一次 ======
+   家人多半用手機、在弱網或切換 Wi-Fi 的當下，一次短暫的斷線就會讓整堂朗讀
+   退回機械音。多試一次，成本極低，卻能救回大部分「其實只是剛好斷一下」的情況。 */
+function ttsPostAudio(bodyObj){
+  function once(){
+    return fetch(TTS_ENDPOINT,{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(bodyObj)
+    }).then(function(res){
+      if(!res.ok) throw new Error("TTS HTTP "+res.status);
+      return res.blob();
+    });
+  }
+  return once()["catch"](function(e1){
+    return new Promise(function(r){ setTimeout(r, 700); }).then(function(){
+      return once()["catch"](function(e2){ throw e2; });
+    });
+  });
+}
 function ttsDBopen(cb){
-  try{ if(!window.indexedDB) return cb(null);
+  /* 保護：indexedDB.open() 有可能既不成功也不失敗（onblocked，或 iOS 在 iframe 內卡住）。
+     那樣 cb 永遠不會被呼叫，朗讀就會整個停在那裡、一點聲音都沒有。
+     所以加一道 2.5 秒的逾時，時間到就當作沒有快取，直接走網路——寧可慢一點，不要沒有聲音。 */
+  var fired=false;
+  function once(v){ if(fired) return; fired=true; try{ cb(v); }catch(e){} }
+  try{ if(!window.indexedDB) return once(null);
+    setTimeout(function(){ once(null); }, 2500);
     var req=indexedDB.open(TTS_DB,1);
     req.onupgradeneeded=function(){ try{ var db=req.result;
       if(!db.objectStoreNames.contains("audio")) db.createObjectStore("audio");
     }catch(e){} };
-    req.onsuccess=function(){ cb(req.result); };
-    req.onerror=function(){ cb(null); };
-  }catch(e){ cb(null); }
+    req.onsuccess=function(){ once(req.result); };
+    req.onerror=function(){ once(null); };
+    req.onblocked=function(){ once(null); };
+  }catch(e){ once(null); }
 }
-function ttsCacheGet(key,cb){ ttsDBopen(function(db){ if(!db) return cb(null);
-  try{ var r=db.transaction("audio","readonly").objectStore("audio").get(key);
-    r.onsuccess=function(){ cb(r.result||null); }; r.onerror=function(){ cb(null); };
-  }catch(e){ cb(null); } }); }
+function ttsCacheGet(key,cb){
+  /* 同樣加逾時：讀取交易若卡住，也不能讓朗讀等在那裡 */
+  var fired=false;
+  function once(v){ if(fired) return; fired=true; try{ cb(v); }catch(e){} }
+  setTimeout(function(){ once(null); }, 3000);
+  ttsDBopen(function(db){ if(!db) return once(null);
+    try{ var r=db.transaction("audio","readonly").objectStore("audio").get(key);
+      r.onsuccess=function(){ once(r.result||null); }; r.onerror=function(){ once(null); };
+    }catch(e){ once(null); } }); }
 function ttsCachePut(key,blob){ ttsDBopen(function(db){ if(!db) return;
   try{ db.transaction("audio","readwrite").objectStore("audio").put(blob,key); }catch(e){}
 }); }
@@ -2888,8 +2920,7 @@ function yunFetchBlob(piece){
   return new Promise(function(resolve,reject){
     ttsCacheGet(key,function(blob){
       if(blob){ resolve(blob); return; }
-      fetch(TTS_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({voice:(spk.voiceOverride||state.azVoice||TTS_VOICE),rate:yunRateAttr(),sil:TTS_SIL_SENTENCE,silc:TTS_SIL_COMMA,sile:TTS_SIL_ENUM,text:piece})})
-        .then(function(res){ if(!res.ok) throw new Error("TTS "+res.status); return res.blob(); })
+      ttsPostAudio({voice:(spk.voiceOverride||state.azVoice||TTS_VOICE),rate:yunRateAttr(),sil:TTS_SIL_SENTENCE,silc:TTS_SIL_COMMA,sile:TTS_SIL_ENUM,text:piece})
         .then(function(b){ try{ ttsCachePut(key,b); }catch(e){} resolve(b); })
         .catch(reject);
     });
@@ -2973,14 +3004,7 @@ function yunPlayJoined(text, id, startIdx){
 
 
 function ttsNetFetch(piece,key){
-  return fetch(TTS_ENDPOINT,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ voice:(spk.voiceOverride||state.azVoice||TTS_VOICE), rate:yunRateAttr(), sil:TTS_SIL_SENTENCE, silc:TTS_SIL_COMMA, sile:TTS_SIL_ENUM, text:piece })
-  }).then(function(res){
-    if(!res.ok) throw new Error("TTS HTTP "+res.status);
-    return res.blob();
-  }).then(function(blob){
+  return ttsPostAudio({ voice:(spk.voiceOverride||state.azVoice||TTS_VOICE), rate:yunRateAttr(), sil:TTS_SIL_SENTENCE, silc:TTS_SIL_COMMA, sile:TTS_SIL_ENUM, text:piece }).then(function(blob){
     try{ ttsCachePut(key,blob); }catch(e){}            /* 盡力存檔，存不存得進都不影響播放 */
     var url=URL.createObjectURL(blob); yun.cache[key]=url; return url;
   });
