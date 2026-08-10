@@ -42,6 +42,59 @@
   .home-box-sep{height:1px;background:rgba(255,255,255,.22);margin:10px 0;}
   .home-box b{font-weight:700;display:block;margin-bottom:4px;}
 
+  /* ===== 聚會頁（你的時間換算 + 倒數 + 正在進行中） ===== */
+  .home-head{position:relative;}
+  .meet-btn{position:absolute;top:22px;right:18px;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);color:#fff;border-radius:22px;padding:7px 13px 7px 11px;font-size:13.5px;font-weight:700;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .meet-btn:active{background:rgba(255,255,255,.3);}
+  .meet-btn svg{width:17px;height:17px;stroke:#fff;stroke-width:2;fill:none;}
+  .meet-wrap{padding-bottom:44px;}
+  .meet-hero{background:linear-gradient(160deg,var(--mintDark) 0%,#1E5C4A 100%);color:#fff;padding:20px 20px 24px;}
+  .meet-back{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:20px;padding:7px 15px;font-size:14.5px;font-weight:600;cursor:pointer;margin-bottom:14px;}
+  .meet-back:active{background:rgba(255,255,255,.28);}
+  .meet-h1{font-size:24px;font-weight:800;line-height:1.3;}
+  .meet-h2{font-size:13.5px;opacity:.88;margin-top:7px;line-height:1.7;}
+  .meet-body{padding:18px 16px 0;}
+  .meet-sec{font-size:13px;font-weight:700;color:var(--inkFaint);letter-spacing:.5px;margin:2px 2px 12px;}
+
+  /* 下一堂 / 正在聚會 大卡 */
+  .nextmtg{background:linear-gradient(155deg,var(--mintDark),#123329);color:#fff;border-radius:20px;padding:20px 18px;margin-bottom:16px;box-shadow:0 8px 22px rgba(30,60,50,.28);}
+  .nextmtg .nm-k{display:inline-block;background:rgba(255,255,255,.16);color:var(--goldSoft);border-radius:999px;padding:6px 15px;font-size:12px;font-weight:800;letter-spacing:2px;}
+  .nextmtg h4{margin:14px 0 8px;font-size:27px;font-weight:800;line-height:1.2;}
+  .nextmtg .nm-t{font-size:17px;letter-spacing:.3px;}
+  .nextmtg .nm-sub{color:#CFE0D8;font-size:13px;margin-top:6px;}
+  .nextmtg .mt-cd{display:block;font-size:14.5px;font-weight:700;color:var(--goldSoft);margin-top:12px;}
+  .nextmtg .mt-cd.live{color:#FFD9D2;}
+  .nextmtg .nm-join{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:16px;background:linear-gradient(135deg,#C2A24B,#8A6400);color:#fff;border:none;border-radius:15px;padding:16px;font-size:18px;font-weight:800;box-sizing:border-box;text-decoration:none;cursor:pointer;box-shadow:0 4px 14px rgba(138,100,0,.32);}
+  .nextmtg .nm-join:active{transform:scale(.99);}
+  .nextmtg .nm-join svg{width:22px;height:22px;stroke:#fff;stroke-width:2;fill:none;}
+  .livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#C0392B;margin-right:7px;vertical-align:middle;animation:mtpulse 1.4s infinite;}
+  .nextmtg .livedot{background:#FFB4A8;}
+  @keyframes mtpulse{0%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}100%{opacity:1;transform:scale(1);}}
+
+  /* 時段卡：左時間塊 / 中內容 / 右加入 */
+  .meet-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.04);}
+  .meet-tb{flex:0 0 106px;background:var(--mintWash);border-radius:13px;padding:12px 6px;text-align:center;}
+  .meet-tb b{display:block;font-size:15.5px;font-weight:800;color:var(--mintDark);letter-spacing:.2px;}
+  .meet-tb .wd{display:block;font-size:13px;color:var(--inkSoft);margin-top:5px;}
+  .meet-tb .yt{display:block;font-size:11px;color:var(--inkFaint);margin-top:2px;}
+  .meet-ct{flex:1;min-width:0;}
+  .meet-name{font-size:18px;font-weight:800;color:var(--ink);}
+  .meet-plat{font-size:13.5px;color:var(--mintDeep);margin-top:3px;}
+  .meet-cd{display:block;font-size:13px;font-weight:700;color:var(--gold);margin-top:6px;}
+  .meet-cd.live{color:#C0392B;}
+  .meet-join{flex:0 0 auto;align-self:center;background:var(--mintDark);color:#fff;border:none;border-radius:13px;padding:13px 18px;font-size:16px;font-weight:800;text-decoration:none;cursor:pointer;white-space:nowrap;}
+  .meet-join:active{opacity:.9;}
+
+  .meet-foot{text-align:center;color:var(--inkSoft);font-size:13px;line-height:1.7;margin:14px 8px 0;}
+  .meet-info{background:var(--mintSoft);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-top:16px;}
+  .meet-info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:15px;}
+  .meet-info-row+.meet-info-row{border-top:1px dashed var(--line);}
+  .meet-info-row .k{color:var(--inkSoft);}
+  .meet-info-row .v{font-weight:800;color:var(--ink);letter-spacing:.6px;}
+  .meet-note{font-size:13px;color:var(--inkSoft);line-height:1.75;text-align:center;margin:16px 6px 0;}
+  .meet-bless{text-align:center;color:var(--mintDeep);font-weight:700;font-size:14px;margin-top:20px;letter-spacing:.5px;}
+
+
   .list-wrap{padding:16px;}
   .list-label{font-size:14px;font-weight:700;color:var(--inkFaint);margin-bottom:14px;letter-spacing:.5px;}
   .lesson-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid var(--line);cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.04);}
@@ -1288,6 +1341,7 @@ function homeHTML(){
     </div>`;
   }).join("");
   return `<div class="home-head">
+    <button class="meet-btn" onclick="openMeet()"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>Meet</button>
     <div class="home-eyebrow">Kingdom 3-2-1 Online Fellowship</div>
     <div class="home-title">321 Morning Devotion</div>
     <div class="home-sub">Pressing on to the last great revival · Awaiting the Lord’s return</div>
@@ -1792,6 +1846,92 @@ function readerHTML(l){
 /* ============ GLOBAL HANDLERS ============ */
 window.openLesson=function(n){state.lesson=LESSONS.find(l=>l.n===n);if(n){state.read[n]=1;state.last=n;markReadDay();}saveState();go("reader");};
 window.goHome=function(){go("home");};
+
+/* ===== 聚會：時區換算引擎（移植自空中團契，含 DST） ===== */
+var mtOK=(function(){try{if(!window.Intl||!Intl.DateTimeFormat)return false;new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Taipei",hour:"2-digit"}).format(new Date());return true;}catch(e){return false;}})();
+function mtPad2(n){return(n<10?"0":"")+n;}
+var MT_DTF={};
+function mtDtf(tz){if(!MT_DTF[tz]){MT_DTF[tz]=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});}return MT_DTF[tz];}
+function mtParts(tz,ts){var ps=mtDtf(tz).formatToParts(new Date(ts)),o={};for(var i=0;i<ps.length;i++)o[ps[i].type]=ps[i].value;return{y:+o.year,m:+o.month,d:+o.day,hh:(+o.hour)%24,mm:+o.minute,ss:+o.second};}
+function mtTzOff(tz,ts){var base=Math.floor(ts/1000)*1000,p=mtParts(tz,base);return(Date.UTC(p.y,p.m-1,p.d,p.hh,p.mm,p.ss)-base)/60000;}
+function mtZoned(tz,y,m,d,hh,mm){var g=Date.UTC(y,m-1,d,hh,mm,0),o1=mtTzOff(tz,g),ts=g-o1*60000,o2=mtTzOff(tz,ts);if(o2!==o1)ts=g-o2*60000;return ts;}
+function mtTz(){return "Asia/Taipei";}
+function mtUserTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||"";}catch(e){return "";}}
+function mtSameTz(){var u=mtUserTz();return !u||u===mtTz();}
+function mtNextOccur(mt,now){if(!mtOK||!mt||!mt.start)return null;var tz=mtTz();now=now||Date.now();var days=mt.days||[0,1,2,3,4,5,6];var sp=String(mt.start).split(":"),ep=String(mt.end||mt.start).split(":");var t=mtParts(tz,now),anchor=Date.UTC(t.y,t.m-1,t.d);for(var k=0;k<9;k++){var pd=new Date(anchor+k*86400000),wd=pd.getUTCDay(),ok=false;for(var i=0;i<days.length;i++){if(days[i]===wd){ok=true;break;}}if(!ok)continue;var y=pd.getUTCFullYear(),m=pd.getUTCMonth()+1,d=pd.getUTCDate();var st=mtZoned(tz,y,m,d,+sp[0],+sp[1]),en=mtZoned(tz,y,m,d,+ep[0],+ep[1]);if(en<=st)en+=86400000;if(now<en)return{start:st,end:en,live:(now>=st),mt:mt};}return null;}
+function mtNext(now){var best=null;for(var i=0;i<MEETINGS.length;i++){var o=mtNextOccur(MEETINGS[i],now);if(!o)continue;if(o.live)return o;if(!best||o.start<best.start)best=o;}return best;}
+function mtLocalWT(ts){var d=new Date(ts);return{wd:mtWdFull(d.getDay()),t:mtPad2(d.getHours())+":"+mtPad2(d.getMinutes())};}
+function mtAnchorWT(ts){var tz=mtTz(),p=mtParts(tz,ts);return{wd:mtWdFull(new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay()),t:mtPad2(p.hh)+":"+mtPad2(p.mm)};}
+
+/* ===== 聚會：顯示與資料（本版語言） ===== */
+var ZOOM="https://zoom.us/j/8193972372?pwd=o3tuX9k87Lyhb3UEV7hgRtSUYVyI1Q.1";
+var MT_CAM='<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>';
+var MT_WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var MEETINGS=[
+  {title:"Morning Devotion",days:[1,2,3,4,5,6],start:"06:00",end:"07:00"},
+  {title:"Midday Word",days:[1,2,3,4,5],start:"12:10",end:"13:00"},
+  {title:"Evening Prayer",days:[1,2,3,4,5],start:"21:00",end:"22:00"}
+];
+function mtWdFull(i){return ""+MT_WD[i];}
+function mtDaysLabel(days){
+  if(!days||!days.length)return "";
+  var a=days.slice().sort(function(x,y){return x-y;}),run=true;
+  for(var i=1;i<a.length;i++){if(a[i]!==a[i-1]+1){run=false;break;}}
+  if(a.length>=3&&run)return mtWdFull(a[0])+"–"+mtWdFull(a[a.length-1]);
+  var o=[];for(var j=0;j<a.length;j++)o.push(mtWdFull(a[j]));
+  return o.join(", ");
+}
+function mtTzCity(tz){var m={"Asia/Taipei":"Taipei","Asia/Shanghai":"Shanghai","Asia/Hong_Kong":"Hong Kong","Asia/Kuala_Lumpur":"Kuala Lumpur","Asia/Singapore":"Singapore","Asia/Jakarta":"Jakarta","Asia/Tokyo":"Tokyo","Asia/Seoul":"Seoul","Pacific/Auckland":"Auckland","America/Los_Angeles":"Los Angeles","America/New_York":"New York","America/Vancouver":"Vancouver","Australia/Sydney":"Sydney","Europe/London":"London"};return m[tz]||(tz?tz.split("/").pop().replace(/_/g," "):"");}
+function mtUntil(ms){
+  if(ms<=0)return "Starting now";
+  var mins=Math.round(ms/60000);
+  if(mins<1)return "Starting now";
+  if(mins<60)return "in "+mins+" min";
+  var h=Math.floor(mins/60),m=mins%60;
+  if(h<24)return "in "+h+" hr"+(m?" "+m+" min":"");
+  var d=Math.floor(h/24),hh=h%24;
+  return "in "+d+" day"+(hh?" "+hh+" hr":"");
+}
+function meetHTML(){
+  var now=Date.now(), nx=mtOK?mtNext(now):null, big="";
+  if(nx){
+    var lw=mtLocalWT(nx.start),le=mtLocalWT(nx.end),aw=mtAnchorWT(nx.start);
+    var cd=nx.live?'<span class="mt-cd live"><span class="livedot"></span>Live now</span>':'<span class="mt-cd">'+mtUntil(nx.start-now)+'</span>';
+    var sub=mtSameTz()?"":'<div class="nm-sub">Taipei\u3000'+aw.wd+' '+aw.t+'</div>';
+    big='<div class="nextmtg"><span class="nm-k">'+(nx.live?"LIVE":"NEXT")+'</span>'
+      +'<h4>'+esc(nx.mt.title)+'</h4>'
+      +'<div class="nm-t">Your time\u3000'+lw.wd+' '+lw.t+'\u2013'+le.t+'</div>'
+      +sub+cd
+      +'<a class="nm-join" href="'+ZOOM+'" target="_blank" rel="noopener">'+MT_CAM+'Join now</a></div>';
+  }
+  var rows="";
+  for(var i=0;i<MEETINGS.length;i++){
+    var mt=MEETINGS[i],o=mtOK?mtNextOccur(mt,now):null,tb,cd2="";
+    if(o){
+      var lw2=mtLocalWT(o.start),le2=mtLocalWT(o.end);
+      tb='<b>'+lw2.t+'\u2013'+le2.t+'</b><span class="wd">'+lw2.wd+'</span><span class="yt">Your time</span>';
+      cd2=o.live?'<span class="meet-cd live"><span class="livedot"></span>Live now</span>':'<span class="meet-cd">'+mtUntil(o.start-now)+'</span>';
+    }else{
+      tb='<b>'+mt.start+'\u2013'+mt.end+'</b><span class="wd">'+mtDaysLabel(mt.days)+'</span><span class="yt">Taipei</span>';
+    }
+    rows+='<div class="meet-card"><div class="meet-tb">'+tb+'</div>'
+      +'<div class="meet-ct"><div class="meet-name">'+esc(mt.title)+'</div><div class="meet-plat">Zoom</div>'+cd2+'</div>'
+      +'<a class="meet-join" href="'+ZOOM+'" target="_blank" rel="noopener">Join</a></div>';
+  }
+  var foot=(mtOK&&!mtSameTz())?'Times are shown in your location ('+esc(mtTzCity(mtUserTz()))+') · anchored to Taipei time':(mtOK?'One Zoom room · open every day':'This device is older and cannot convert time zones · please go by Taipei time');
+  return '<div class="meet-wrap"><div class="meet-hero">'
+    +'<button class="meet-back" onclick="goHome()">‹ Home</button>'
+    +'<div class="meet-h1">Online Gatherings</div><div class="meet-h2">One Zoom room · open every day<br>Tap the link and your family can join the platform to learn together</div></div>'
+    +'<div class="meet-body"><div class="meet-sec">Three gatherings daily · soaking in the Word of God</div>'
+    +big+rows
+    +'<p class="meet-foot">'+foot+'</p>'
+    +'<div class="meet-info"><div class="meet-info-row"><span class="k">Meeting ID</span><span class="v">819 397 2372</span></div>'
+    +'<div class="meet-info-row"><span class="k">Passcode</span><span class="v">321</span></div></div>'
+    +'<div class="meet-note">If the button does not respond, open the Zoom app, tap Join a Meeting, and enter Meeting ID 819 397 2372 and passcode 321. Wherever you are, the times are converted to your local time automatically.</div><div class="meet-bless">The Lord bless you and keep you ✦ Eyes on Jesus</div></div></div>';
+}
+function mtStart(){if(window.__mtTimer)clearInterval(window.__mtTimer);window.__mtTimer=setInterval(function(){if(state.view!=="meet"){clearInterval(window.__mtTimer);window.__mtTimer=null;return;}render();},30000);}
+window.openMeet=function(){go("meet");mtStart();};
+
 window.nextLesson=function(){const nx=LESSONS.find(l=>l.n===state.lesson.n+1);if(nx){state.lesson=nx;state.read[nx.n]=1;state.last=nx.n;markReadDay();saveState();go("reader");}else{go("home");}};
 window.prevLesson=function(){const pv=LESSONS.find(l=>l.n===state.lesson.n-1);if(pv){state.lesson=pv;state.read[pv.n]=1;state.last=pv.n;markReadDay();saveState();go("reader");}};
 window.setTab=setTab;
@@ -2511,7 +2651,7 @@ var CONFLICT321=[
 
 function render(){
   const app=document.getElementById("app");
-  app.innerHTML = state.view==="home" ? homeHTML() : (state.view==="book" ? bookHomeHTML() : (state.view==="bookunit" ? bookUnitHTML() : (state.view==="review" ? reviewHTML() : (state.view==="strategy" ? strategyHTML() : readerHTML(state.lesson)))));
+  app.innerHTML = state.view==="home" ? homeHTML() : (state.view==="meet" ? meetHTML() : (state.view==="book" ? bookHomeHTML() : (state.view==="bookunit" ? bookUnitHTML() : (state.view==="review" ? reviewHTML() : (state.view==="strategy" ? strategyHTML() : readerHTML(state.lesson))))));
   renderChat();
   if(state.view==="reader"&&state.lesson){
     if(state.tab==="declare") recHydrate("declare",state.lesson.n);
@@ -2859,52 +2999,20 @@ function yunChunks(text){
 /* 每段語音一生只向 Worker 抓一次，之後秒播、離線可聽，替 Worker 省成本。 */
 /* 任何 IndexedDB 失敗都自動走回網路抓取，絕不影響既有朗讀與內建語音退路。 */
 var TTS_DB="chendu321_tts";
-
-/* ====== 向 Worker 取語音：失敗自動重試一次 ======
-   家人多半用手機、在弱網或切換 Wi-Fi 的當下，一次短暫的斷線就會讓整堂朗讀
-   退回機械音。多試一次，成本極低，卻能救回大部分「其實只是剛好斷一下」的情況。 */
-function ttsPostAudio(bodyObj){
-  function once(){
-    return fetch(TTS_ENDPOINT,{
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(bodyObj)
-    }).then(function(res){
-      if(!res.ok) throw new Error("TTS HTTP "+res.status);
-      return res.blob();
-    });
-  }
-  return once()["catch"](function(e1){
-    return new Promise(function(r){ setTimeout(r, 700); }).then(function(){
-      return once()["catch"](function(e2){ throw e2; });
-    });
-  });
-}
 function ttsDBopen(cb){
-  /* 保護：indexedDB.open() 有可能既不成功也不失敗（onblocked，或 iOS 在 iframe 內卡住）。
-     那樣 cb 永遠不會被呼叫，朗讀就會整個停在那裡、一點聲音都沒有。
-     所以加一道 2.5 秒的逾時，時間到就當作沒有快取，直接走網路——寧可慢一點，不要沒有聲音。 */
-  var fired=false;
-  function once(v){ if(fired) return; fired=true; try{ cb(v); }catch(e){} }
-  try{ if(!window.indexedDB) return once(null);
-    setTimeout(function(){ once(null); }, 2500);
+  try{ if(!window.indexedDB) return cb(null);
     var req=indexedDB.open(TTS_DB,1);
     req.onupgradeneeded=function(){ try{ var db=req.result;
       if(!db.objectStoreNames.contains("audio")) db.createObjectStore("audio");
     }catch(e){} };
-    req.onsuccess=function(){ once(req.result); };
-    req.onerror=function(){ once(null); };
-    req.onblocked=function(){ once(null); };
-  }catch(e){ once(null); }
+    req.onsuccess=function(){ cb(req.result); };
+    req.onerror=function(){ cb(null); };
+  }catch(e){ cb(null); }
 }
-function ttsCacheGet(key,cb){
-  /* 同樣加逾時：讀取交易若卡住，也不能讓朗讀等在那裡 */
-  var fired=false;
-  function once(v){ if(fired) return; fired=true; try{ cb(v); }catch(e){} }
-  setTimeout(function(){ once(null); }, 3000);
-  ttsDBopen(function(db){ if(!db) return once(null);
-    try{ var r=db.transaction("audio","readonly").objectStore("audio").get(key);
-      r.onsuccess=function(){ once(r.result||null); }; r.onerror=function(){ once(null); };
-    }catch(e){ once(null); } }); }
+function ttsCacheGet(key,cb){ ttsDBopen(function(db){ if(!db) return cb(null);
+  try{ var r=db.transaction("audio","readonly").objectStore("audio").get(key);
+    r.onsuccess=function(){ cb(r.result||null); }; r.onerror=function(){ cb(null); };
+  }catch(e){ cb(null); } }); }
 function ttsCachePut(key,blob){ ttsDBopen(function(db){ if(!db) return;
   try{ db.transaction("audio","readwrite").objectStore("audio").put(blob,key); }catch(e){}
 }); }
@@ -2920,7 +3028,8 @@ function yunFetchBlob(piece){
   return new Promise(function(resolve,reject){
     ttsCacheGet(key,function(blob){
       if(blob){ resolve(blob); return; }
-      ttsPostAudio({voice:(spk.voiceOverride||state.azVoice||TTS_VOICE),rate:yunRateAttr(),sil:TTS_SIL_SENTENCE,silc:TTS_SIL_COMMA,sile:TTS_SIL_ENUM,text:piece})
+      fetch(TTS_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({voice:(spk.voiceOverride||state.azVoice||TTS_VOICE),rate:yunRateAttr(),sil:TTS_SIL_SENTENCE,silc:TTS_SIL_COMMA,sile:TTS_SIL_ENUM,text:piece})})
+        .then(function(res){ if(!res.ok) throw new Error("TTS "+res.status); return res.blob(); })
         .then(function(b){ try{ ttsCachePut(key,b); }catch(e){} resolve(b); })
         .catch(reject);
     });
@@ -3004,7 +3113,14 @@ function yunPlayJoined(text, id, startIdx){
 
 
 function ttsNetFetch(piece,key){
-  return ttsPostAudio({ voice:(spk.voiceOverride||state.azVoice||TTS_VOICE), rate:yunRateAttr(), sil:TTS_SIL_SENTENCE, silc:TTS_SIL_COMMA, sile:TTS_SIL_ENUM, text:piece }).then(function(blob){
+  return fetch(TTS_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ voice:(spk.voiceOverride||state.azVoice||TTS_VOICE), rate:yunRateAttr(), sil:TTS_SIL_SENTENCE, silc:TTS_SIL_COMMA, sile:TTS_SIL_ENUM, text:piece })
+  }).then(function(res){
+    if(!res.ok) throw new Error("TTS HTTP "+res.status);
+    return res.blob();
+  }).then(function(blob){
     try{ ttsCachePut(key,blob); }catch(e){}            /* 盡力存檔，存不存得進都不影響播放 */
     var url=URL.createObjectURL(blob); yun.cache[key]=url; return url;
   });
