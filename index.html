@@ -4564,12 +4564,15 @@ if ("serviceWorker" in navigator) {
     var x=p.querySelector(".up-x"); if(x) x.onclick=function(){ try{p.remove();}catch(e){p.style.display="none";} };
   };
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("./sw.js").catch(function(){});
+    navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).catch(function(){});
   });
   navigator.serviceWorker.addEventListener("message", function(ev){
     if(ev && ev.data && ev.data.type==="update-available"){ if(window.__showUpdatePill) window.__showUpdatePill(); }
   });
 }
 </script>
+<script>var APPVER="1.2.1-up1103";window.UPD321_VER=APPVER;window.UPD321_PFX=["chendu321-en-"];window.UPD321_BUSY=function(){try{return !!(window.spk&&spk.active)||!!(window.chat&&chat.busy);}catch(e){return false;}};</script>
+<script src="upd321.js?v=1.2.1-up1103"></script>
+<script>UPD321.mountWhen("#spk-sheet .spk-card","end");</script>
 </body>
 </html>
